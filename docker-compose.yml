@@ -37,3 +37,14 @@ services:
     links:
       - kafka
       - zookeeper
+
+  create-topic:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - kafka
+    command: >
+      sh -c "
+      while ! nc -z kafka 29092; do sleep 1; done;
+      kafka-topics --create --topic new_orders --partitions 4 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && 
+      kafka-topics --create --topic payed_orders --partitions 4 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092 && 
+      kafka-topics --create --topic sent_orders --partitions 4 --replication-factor 1 --if-not-exists --bootstrap-server kafka:29092"
